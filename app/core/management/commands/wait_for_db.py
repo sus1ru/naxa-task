@@ -1,5 +1,6 @@
 """
-Django custom command to deal with the racing condition while postgres initialization (wait for the DB to available).
+Django custom command to deal with the racing condition while postgres
+initialization(wait for the DB to available).
 """
 
 import time
@@ -12,10 +13,8 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     """ Django command to wait for the DB to available """
-    
     def handle(self, *args, **options):
         """ Entry point for the django command """
-
         self.stdout.write('Getting the database ready...')
         db_up = False
         while db_up is False:

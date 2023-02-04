@@ -34,6 +34,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
+    'rest_framework.authtoken',
+    'user',
     'core',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -132,3 +134,17 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'BasicAuth': {
+            'type': 'basic'
+      },
+      'TokenAuth': {
+            'type': 'apiKey',
+            'description': "Uses token to authenticate users.",
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}

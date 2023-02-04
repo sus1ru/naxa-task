@@ -26,14 +26,14 @@ class AdminSiteTests(TestCase):
     
     def test_user_list(self):
         """ Test for the users listed in the page """
-        url = reverse("admin:core_user_changelist")                     # Reversing to get the url for user list from the django admin through
+        url = reverse("admin:core_user_changelist")                     # Reversing to get the url for user list from the django admin
         res = self.client.get(url)
         self.assertContains(res, self.user.name)
         self.assertContains(res, self.user.email)
 
     def test_edit_user_page(self):
         """ Test editing of the user works """
-        url = reverse("admin:core_user_change", args=[self.user.id])     # Get the url for user page from the id
+        url = reverse("admin:core_user_change", args=[self.user.id])    # Get the url for user page from the id
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
 

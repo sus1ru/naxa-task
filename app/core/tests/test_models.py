@@ -4,6 +4,8 @@ Test for custom models.
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from core import models
+
 
 class ModelTests(TestCase):
     """Model Test Class"""
@@ -45,3 +47,45 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_task(self):
+        """Test creation of a task"""
+        users = {
+            'staff': {
+                'email': 'keyser@example.com',
+                'password': 'keysersoze'
+            },
+            'assignee_intern': {
+                'email': 'megamind@example.com',
+                'password': 'roxanne'
+            },
+        }
+        staff = get_user_model().objects.create_staff(**users['staff'])
+        self.assertTrue(staff.is_staff)
+
+        assignee_intern = get_user_model().objects.create_user(
+            **users['assignee_intern']
+        )
+        self.assertEqual(
+            assignee_intern.email,
+            users['assignee_intern']['email']
+        )
+        self.assertTrue(
+            assignee_intern.check_password(
+                users['assignee_intern']['password']
+            )
+        )
+
+        task = {
+            'user': staff,
+            'title': 'Restart the Router',
+            'assignee_intern': users['assignee_intern']['email'],
+            'description': "Restart the router every 5 minutes.",
+            'completion': False,
+        }
+
+        res = get_user_model().objects.get(email=task['assignee_intern'])
+        self.assertEqual(res.email, task['assignee_intern'])
+
+        task = models.Task.objects.create(**task)
+        self.assertEqual(str(task), task.title)

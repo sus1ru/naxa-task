@@ -47,10 +47,8 @@ class GuestUserApiTests(TestCase):
             'password': 'peeonmyrug',
             'name': 'thedude',
         }
-        """
-        **payload splits the arguments as
-        (email='lebowski@example.com', password='peeonmyrug'...)
-        """
+        # **payload splits the arguments as
+        # (email='lebowski@example.com', password='peeonmyrug'...)
         create_user(**payload)
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

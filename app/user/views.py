@@ -62,15 +62,17 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve atendance for authenticated users."""
-        return self.queryset.filter(user=self.request.user).order_by('-attended_at')
-    
+        return self.queryset.filter(
+            user=self.request.user
+        ).order_by('-attended_at')
+
     def get_serializer_class(self):
         """Return the serializer for requests."""
         if self.action == 'list' or self.action == 'create':
             return AttendanceSerializer
 
         return self.serializer_class
-    
+
     def perform_create(self, serializer):
         """Create a new Attendance."""
         serializer.save(user=self.request.user)

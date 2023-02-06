@@ -73,6 +73,7 @@ class AuthTokenSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+
 class AttendanceSerializer(serializers.ModelSerializer):
     """Serializer for Attendance"""
     class Meta:
@@ -84,4 +85,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class AttendanceDetailSerializer(AttendanceSerializer):
     """Serializer for Attendance"""
     class Meta(AttendanceSerializer.Meta):
-        fields = AttendanceSerializer.Meta.fields + ['date'] + ['attendance_last_modified']
+        fields = AttendanceSerializer.Meta.fields + \
+                 ['date'] + \
+                 ['attendance_last_modified']

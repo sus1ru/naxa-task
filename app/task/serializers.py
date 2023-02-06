@@ -2,10 +2,7 @@
 Serializers for Task APIs.
 """
 from rest_framework import serializers
-from core.models import (
-    Task,
-    Attendance
-)
+from core.models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -25,7 +22,6 @@ class TaskDetailSerializer(TaskSerializer):
     """Serializer for the task detail view."""
     class Meta(TaskSerializer.Meta):
         fields = TaskSerializer.Meta.fields + ['description']
-
 
 # class AttendanceSerializer(serializers.ModelSerializer):
 #     """Serializer for Attendance"""

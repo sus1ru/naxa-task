@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from core import models
 
 
-def create_user(email = "pp@example.com", password = "mypphurt"):
+def create_user(email="pp@example.com", password="mypphurt"):
     """Create and return a dummy user."""
     return get_user_model().objects.create_user(email, password)
 
@@ -89,7 +89,9 @@ class ModelTests(TestCase):
             'completion': False,
         }
 
-        res = get_user_model().objects.get(email=task['assignee_intern'])
+        res = get_user_model().objects.get(
+            email=task['assignee_intern']
+        )
         self.assertEqual(res.email, task['assignee_intern'])
 
         task = models.Task.objects.create(**task)
@@ -98,6 +100,11 @@ class ModelTests(TestCase):
     def test_create_attendance(self):
         """Test creation of attendance is successful."""
         user = create_user()
-        attendance = models.Attendance.objects.create(user=user, status=models.Attendance.PRESENT)
+        attendance = models.Attendance.objects.create(
+            user=user, status=models.Attendance.PRESENT
+        )
 
-        self.assertEqual(str(attendance), f"{attendance.user.name}: {attendance.status.title()}")
+        self.assertEqual(
+            str(attendance),
+            f"{attendance.user.name}: {attendance.status.title()}"
+        )

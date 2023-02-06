@@ -16,13 +16,21 @@ from user.serializers import (
 
 ATTENDANCES_URL = reverse('user:attendance-list')
 
-def create_user(email = "pp@example.com", password = "mypphurt"):
+
+def create_user(email="pp@example.com", password="mypphurt"):
     """Create and return a dummy user."""
-    return get_user_model().objects.create_user(email, password)
+    return get_user_model().objects.create_user(
+        email,
+        password
+    )
+
 
 def detail_url(attendance_id):
     """Create and return a attendance detail URL."""
-    return reverse('user:attendance-detail', args=[attendance_id])
+    return reverse(
+        'user:attendance-detail',
+        args=[attendance_id]
+    )
 
 
 class PublicAttendanceApiTests(TestCase):
@@ -34,7 +42,10 @@ class PublicAttendanceApiTests(TestCase):
     def test_auth_required(self):
         """Test authentication is required for Attendance API."""
         res = self.client.get(ATTENDANCES_URL)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(
+            res.status_code,
+            status.HTTP_401_UNAUTHORIZED
+        )
 
 
 class PrivateTaskApiTests(TestCase):
@@ -44,16 +55,28 @@ class PrivateTaskApiTests(TestCase):
         self.client = APIClient()
         self.user = create_user()
         self.client.force_authenticate(self.user)
-    
+
     def test_attendance_duplication(self):
-        """Test whether creation of more than one attendance in a day causes error."""
-        Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+        """
+        Test whether creation of more than one attendance
+        in a day causes error.
+        """
+        Attendance.objects.create(
+            user=self.user,
+            status=Attendance.ABSENT
+        )
         with self.assertRaises(IntegrityError):
-            Attendance.objects.create(user=self.user, status=Attendance.PRESENT)
+            Attendance.objects.create(
+                user=self.user,
+                status=Attendance.PRESENT
+            )
 
     def test_retrieve_attendance(self):
         """Test retrieving of the attendance list."""
-        Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+        Attendance.objects.create(
+            user=self.user,
+            status=Attendance.ABSENT
+        )
 
         res = self.client.get(ATTENDANCES_URL)
 
@@ -61,22 +84,28 @@ class PrivateTaskApiTests(TestCase):
         serializer = AttendanceSerializer(attendance, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
-    
+
     def test_get_attendance_detail(self):
         """Test get attendance detail."""
-        task = Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+        task = Attendance.objects.create(
+            user=self.user,
+            status=Attendance.ABSENT
+        )
 
         url = detail_url(task.id)
         res = self.client.get(url)
 
         serializer = AttendanceDetailSerializer(task)
         self.assertEqual(res.data, serializer.data)
-    
+
     def test_attendance_not_visible_to_interns(self):
         """Test the attendance of an intern is only visible to themselves."""
         user2 = create_user(email='pp2@example.com')
         Attendance.objects.create(user=user2, status=Attendance.ABSENT)
-        attendance = Attendance.objects.create(user=self.user, status=Attendance.PRESENT)
+        attendance = Attendance.objects.create(
+            user=self.user,
+            status=Attendance.PRESENT
+        )
         res = self.client.get(ATTENDANCES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -86,7 +115,10 @@ class PrivateTaskApiTests(TestCase):
 
     def test_update_attendance(self):
         """Test updating an attendance."""
-        attendance = Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+        attendance = Attendance.objects.create(
+            user=self.user,
+            status=Attendance.ABSENT
+        )
 
         payload = {'status': attendance.PRESENT}
         url = detail_url(attendance.id)
@@ -98,12 +130,18 @@ class PrivateTaskApiTests(TestCase):
 
     def test_delete_attendance(self):
         """Test deleting an attendance."""
-        attendance = Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+        attendance = Attendance.objects.create(
+            user=self.user,
+            status=Attendance.ABSENT
+        )
 
         url = detail_url(attendance.id)
         res = self.client.delete(url)
 
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(
+            res.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
         tags = Attendance.objects.filter(user=self.user)
         self.assertFalse(tags.exists())
 

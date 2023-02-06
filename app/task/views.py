@@ -2,17 +2,11 @@
 Views for the task API.
 """
 
-from rest_framework import (
-    viewsets,
-    mixins
-) 
+from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import (
-    Task,
-    Attendance
-)
+from core.models import Task
 from task import serializers
 
 
@@ -48,11 +42,13 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 #     def get_queryset(self):
 #         """Retrieve atendance for authenticated users."""
-#         return self.queryset.filter(user=self.request.user).order_by('-attended_at')
-    
+#         return self.queryset.filter(
+#             user=self.request.user
+#         ).order_by('-attended_at')
+
 #     def get_serializer_class(self):
 #         """Return the serializer for requests."""
-#         if self.action is not 'list':
+#         if self.action != 'list':
 #             return serializers.AttendanceDetailSerializer
 
 #         return self.serializer_class

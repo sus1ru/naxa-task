@@ -1,5 +1,5 @@
-# TodoApp
-naxa-task, A simple REST API django application to manage interns in an organization.
+# naxa-task
+A simple REST API django application to manage interns in an organization.
 
 
 ### Features

@@ -11,8 +11,6 @@ from django.contrib.auth.models import (
     PermissionsMixin
 )
 
-from django.core.exceptions import ValidationError
-
 
 class UserManager(BaseUserManager):
     """Manager for users"""
@@ -71,7 +69,7 @@ class Task(models.Model):
 class Attendance(models.Model):
     """Attendance for the users."""
     date = models.CharField(
-        max_length=10,
+        max_length=16,
         default=date.today().strftime("%Y-%m-%d"),
         blank=False,
     )
@@ -86,22 +84,18 @@ class Attendance(models.Model):
     class Meta:
         unique_together = ("date", "user")
 
-    PRESENT = 'P'
-    PRESENT_LOWER = 'p'
-    ABSENT = 'A'
-    ABSENT_LOWER = 'a'
+    PRESENT = 'present'
+    ABSENT = 'absent'
     ATTENDANCE_STATUS = [
-        (PRESENT, 'present'),
-        (PRESENT_LOWER, 'present'),
-        (ABSENT, 'absent'),
-        (ABSENT_LOWER, 'absent'),
+        (PRESENT, 'Present'),
+        (ABSENT, 'Absent'),
     ]
 
     status = models.CharField(
-        max_length=1,
+        max_length=8,
         choices=ATTENDANCE_STATUS,
         default=ABSENT
     )
 
     def __str__(self):
-        return self.status
+        return f"{self.user.name}: {self.status.title()}"

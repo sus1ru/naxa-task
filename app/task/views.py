@@ -39,24 +39,24 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class AttendanceViewSet(viewsets.ModelViewSet):
-    """View to manage Attendance APIs."""
-    serializer_class = serializers.AttendanceSerializer
-    queryset = Attendance.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+# class AttendanceViewSet(viewsets.ModelViewSet):
+#     """View to manage Attendance APIs."""
+#     serializer_class = serializers.AttendanceSerializer
+#     queryset = Attendance.objects.all()
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        """Retrieve atendance for authenticated users."""
-        return self.queryset.filter(user=self.request.user).order_by('-attended_at')
+#     def get_queryset(self):
+#         """Retrieve atendance for authenticated users."""
+#         return self.queryset.filter(user=self.request.user).order_by('-attended_at')
     
-    def get_serializer_class(self):
-        """Return the serializer for requests."""
-        if self.action is not 'list':
-            return serializers.AttendanceDetailSerializer
+#     def get_serializer_class(self):
+#         """Return the serializer for requests."""
+#         if self.action is not 'list':
+#             return serializers.AttendanceDetailSerializer
 
-        return self.serializer_class
+#         return self.serializer_class
 
-    def perform_create(self, serializer):
-        """Create a new Attendance."""
-        serializer.save(user=self.request.user)
+#     def perform_create(self, serializer):
+#         """Create a new Attendance."""
+#         serializer.save(user=self.request.user)

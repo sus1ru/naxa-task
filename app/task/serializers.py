@@ -22,20 +22,20 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class TaskDetailSerializer(TaskSerializer):
-    """Serializer for the task detail view.."""
+    """Serializer for the task detail view."""
     class Meta(TaskSerializer.Meta):
         fields = TaskSerializer.Meta.fields + ['description']
 
 
-class AttendanceSerializer(serializers.ModelSerializer):
-    """Serializer for Attendance"""
-    class Meta:
-        model = Attendance
-        fields = ['id', 'status']
-        read_only_fields = ['id']
+# class AttendanceSerializer(serializers.ModelSerializer):
+#     """Serializer for Attendance"""
+#     class Meta:
+#         model = Attendance
+#         fields = ['id', 'status']
+#         read_only_fields = ['id']
 
 
-class AttendanceDetailSerializer(AttendanceSerializer):
-    """Serializer for Attendance"""
-    class Meta(AttendanceSerializer.Meta):
-        fields = AttendanceSerializer.Meta.fields + ['date']
+# class AttendanceDetailSerializer(AttendanceSerializer):
+#     """Serializer for Attendance"""
+#     class Meta(AttendanceSerializer.Meta):
+#         fields = AttendanceSerializer.Meta.fields + ['date']

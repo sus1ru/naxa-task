@@ -7,8 +7,16 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from user.serializers import (
     UserSerializer,
-    AuthTokenSerializer
+    AuthTokenSerializer,
+    AttendanceSerializer,
+    AttendanceDetailSerializer
 )
+
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from core.models import Attendance
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -43,3 +51,26 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         (Override: custom method to deal with get requests)
         """
         return self.request.user
+
+
+class AttendanceViewSet(viewsets.ModelViewSet):
+    """View to manage Attendance APIs."""
+    serializer_class = AttendanceDetailSerializer
+    queryset = Attendance.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Retrieve atendance for authenticated users."""
+        return self.queryset.filter(user=self.request.user).order_by('-attended_at')
+    
+    def get_serializer_class(self):
+        """Return the serializer for requests."""
+        if self.action == 'list' or self.action == 'create':
+            return AttendanceSerializer
+
+        return self.serializer_class
+    
+    def perform_create(self, serializer):
+        """Create a new Attendance."""
+        serializer.save(user=self.request.user)

@@ -98,6 +98,6 @@ class ModelTests(TestCase):
     def test_create_attendance(self):
         """Test creation of attendance is successful."""
         user = create_user()
-        attendance = models.Attendance.objects.create(user=user, status='P')
+        attendance = models.Attendance.objects.create(user=user, status=models.Attendance.PRESENT)
 
-        self.assertEqual(str(attendance), attendance.status)
+        self.assertEqual(str(attendance), f"{attendance.user.name}: {attendance.status.title()}")

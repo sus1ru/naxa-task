@@ -13,7 +13,7 @@ from task import views
 
 router = DefaultRouter()
 router.register('tasks', views.TaskViewSet)
-router.register('attendances', views.AttendanceViewSet)
+# router.register('attendances', views.AttendanceViewSet)
 
 app_name = 'task'
 

@@ -9,11 +9,12 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.models import Attendance
-from task.serializers import (
+from user.serializers import (
     AttendanceSerializer,
+    AttendanceDetailSerializer
 )
 
-ATTENDANCE_URL = reverse('task:attendance-list')
+ATTENDANCES_URL = reverse('user:attendance-list')
 
 def create_user(email = "pp@example.com", password = "mypphurt"):
     """Create and return a dummy user."""
@@ -21,7 +22,7 @@ def create_user(email = "pp@example.com", password = "mypphurt"):
 
 def detail_url(attendance_id):
     """Create and return a attendance detail URL."""
-    return reverse('task:attendance-detail', args=[attendance_id])
+    return reverse('user:attendance-detail', args=[attendance_id])
 
 
 class PublicAttendanceApiTests(TestCase):
@@ -32,7 +33,7 @@ class PublicAttendanceApiTests(TestCase):
 
     def test_auth_required(self):
         """Test authentication is required for Attendance API."""
-        res = self.client.get(ATTENDANCE_URL)
+        res = self.client.get(ATTENDANCES_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -50,23 +51,33 @@ class PrivateTaskApiTests(TestCase):
         with self.assertRaises(IntegrityError):
             Attendance.objects.create(user=self.user, status=Attendance.PRESENT)
 
-    def test_retrieve_todays_attendance(self):
+    def test_retrieve_attendance(self):
         """Test retrieving of the attendance list."""
         Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
 
-        res = self.client.get(ATTENDANCE_URL)
+        res = self.client.get(ATTENDANCES_URL)
 
         attendance = Attendance.objects.all().order_by('-id')
         serializer = AttendanceSerializer(attendance, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
     
+    def test_get_attendance_detail(self):
+        """Test get attendance detail."""
+        task = Attendance.objects.create(user=self.user, status=Attendance.ABSENT)
+
+        url = detail_url(task.id)
+        res = self.client.get(url)
+
+        serializer = AttendanceDetailSerializer(task)
+        self.assertEqual(res.data, serializer.data)
+    
     def test_attendance_not_visible_to_interns(self):
-        """Test the attendance of an intern is visible to themselves only."""
+        """Test the attendance of an intern is only visible to themselves."""
         user2 = create_user(email='pp2@example.com')
         Attendance.objects.create(user=user2, status=Attendance.ABSENT)
         attendance = Attendance.objects.create(user=self.user, status=Attendance.PRESENT)
-        res = self.client.get(ATTENDANCE_URL)
+        res = self.client.get(ATTENDANCES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
@@ -100,7 +111,7 @@ class PrivateTaskApiTests(TestCase):
         """Test creation of attendance."""
         payload = {'status': Attendance.PRESENT}
 
-        res = self.client.post(ATTENDANCE_URL, payload)
+        res = self.client.post(ATTENDANCES_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         attendance = Attendance.objects.get(id=res.data['id'])

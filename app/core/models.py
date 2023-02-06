@@ -39,6 +39,29 @@ class UserManager(BaseUserManager):
         return user
 
 
+class Task(models.Model):
+    """Model for task object"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="creator",
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    assignee_intern = models.EmailField(max_length=255)
+    assignee_intern_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="executor",
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    completion = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Users in the Organization"""
     email = models.EmailField(max_length=255, unique=True)
@@ -51,19 +74,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
-class Task(models.Model):
-    """Model for task object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    assignee_intern = models.CharField(max_length=255)
-    completion = models.BooleanField(default=False)
+# class AsignTask(models.Model):
+#     items = models.ManyToManyField(Task, through='PackItem')
 
-    def __str__(self):
-        return self.title
+
+# class TaskList(models.Model):
+#     task = models.ForeignKey(Task, on_delete=models.CASCADE)
+#     pack = models.ForeignKey(AsignTask, on_delete=models.CASCADE)
+#     quantity = models.IntegerField(default=1)
 
 
 class Attendance(models.Model):

@@ -54,7 +54,7 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
 
     def test_create_task(self):
-        """Test creation of a task"""
+        """Test creation of a new Task."""
         users = {
             'staff': {
                 'email': 'keyser@example.com',

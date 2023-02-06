@@ -16,6 +16,14 @@ class TaskSerializer(serializers.ModelSerializer):
             'completion',
         ]
         read_only_fields = ['id']
+    
+    # def create(self, validated_data):
+    #     """
+    #     Create and assign user field based on the user email passed.
+    #     """
+    #     user_email = validated_data.get("assignee_intern")
+    #     user = get_user_model().objects.get(email__exact='user')
+    #     return super().create(validated_data)
 
 
 class TaskDetailSerializer(TaskSerializer):

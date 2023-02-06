@@ -92,7 +92,7 @@ class PrivateTaskApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_get_recipe_detail(self):
+    def test_get_task_detail(self):
         """Test get task detail."""
         task = create_task(user=self.user)
 

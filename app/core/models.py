@@ -1,6 +1,8 @@
 """
 User Database Models.
 """
+from datetime import datetime as date
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
@@ -9,9 +11,12 @@ from django.contrib.auth.models import (
     PermissionsMixin
 )
 
+from django.core.exceptions import ValidationError
+
 
 class UserManager(BaseUserManager):
     """Manager for users"""
+
     def create_user(self, email, password=None, **extra_fields):
         """Create a new user and assign the roles, save them, then return"""
         if not email:
@@ -61,3 +66,42 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Attendance(models.Model):
+    """Attendance for the users."""
+    date = models.CharField(
+        max_length=10,
+        default=date.today().strftime("%Y-%m-%d"),
+        blank=False,
+    )
+    attended_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    attendance_last_modified = models.DateTimeField(auto_now=True)
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("date", "user")
+
+    PRESENT = 'P'
+    PRESENT_LOWER = 'p'
+    ABSENT = 'A'
+    ABSENT_LOWER = 'a'
+    ATTENDANCE_STATUS = [
+        (PRESENT, 'present'),
+        (PRESENT_LOWER, 'present'),
+        (ABSENT, 'absent'),
+        (ABSENT_LOWER, 'absent'),
+    ]
+
+    status = models.CharField(
+        max_length=1,
+        choices=ATTENDANCE_STATUS,
+        default=ABSENT
+    )
+
+    def __str__(self):
+        return self.status
